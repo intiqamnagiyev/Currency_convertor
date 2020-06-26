@@ -3,7 +3,7 @@ const currencyData = [
     text: "USD - American dollar",
     value: "USD",
     selected: false,
-    imageSrc: "./img/usd.png",
+    imageSrc: "/img/usd.png",
   },
   {
     text: "EUR -  European Union",
