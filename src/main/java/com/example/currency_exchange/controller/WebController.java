@@ -72,7 +72,7 @@ public class WebController {
         } else {
             final User user = ConvertUtil.convert(userForm);
             log.info(user);
-            userService.save(user);
+            final User insertedUser = userService.save(user);
             ra.addFlashAttribute("message", String.format("%s! successfully registered", userForm.getFullName()));
             mav.setViewName("redirect:/web/login");
         }
