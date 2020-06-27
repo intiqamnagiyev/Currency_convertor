@@ -1,6 +1,7 @@
 package com.example.currency_exchange.controller;
 
 import com.example.currency_exchange.entity.User;
+import com.example.currency_exchange.ex.UserNotFoundEx;
 import com.example.currency_exchange.model.LoginUser;
 import com.example.currency_exchange.model.UserForm;
 import com.example.currency_exchange.service.CurrencyService;
@@ -18,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -51,6 +51,7 @@ public class WebController {
             dataBinder.setValidator(loginUserValidator);
         }
     }
+
 
     /**
      * http://localhost:8080/web/register
@@ -92,15 +93,12 @@ public class WebController {
     @PostMapping("/login")
     public ModelAndView postLogin(@ModelAttribute("loginUser") @Validated LoginUser loginUser,
                                   BindingResult result, HttpSession session) {
-
-        final ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView();
         if (result.hasErrors()) {
             mav.setViewName("index");
         } else {
-            final Optional<User> user = userService.getUserByEmail(loginUser);
-            user.ifPresent(u->{
-                session.setAttribute("user", user.get());
-            });
+            final User user = userService.getUserByEmail(loginUser);
+            session.setAttribute("user", user);
             mav.setViewName("redirect:/web/main-page");
         }
 
@@ -112,9 +110,18 @@ public class WebController {
         final ModelAndView mav = new ModelAndView();
         final User user = (User) session.getAttribute("user");
         if (user != null) {
-            mav.addObject("fullName",user.getFullName());
+            mav.addObject("fullName", user.getFullName());
             mav.setViewName("main-page-authorized");
         } else mav.setViewName("main-page");
+        return mav;
+    }
+
+    @ExceptionHandler({UserNotFoundEx.class})
+    public ModelAndView userNotFoundHandle(){
+        log.info("caught: UserNotFoundEx");
+        final ModelAndView mav = new ModelAndView("index");
+        mav.addObject("exMessage", "email or password is incorrect");
+        mav.addObject("loginUser", new LoginUser());
         return mav;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.currency_exchange.validator;
 
 import com.example.currency_exchange.model.UserForm;
+import com.example.currency_exchange.service.UserService;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -9,6 +10,12 @@ import org.springframework.validation.Validator;
 
 @Component
 public class RegistrationFormValidator implements Validator {
+    private final UserService userService;
+
+    public RegistrationFormValidator(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     public boolean supports(Class<?> aClass) {
         return aClass == UserForm.class;
@@ -17,12 +24,12 @@ public class RegistrationFormValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         UserForm userForm = (UserForm) o;
-
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fullName", "registrationForm.name.required");
-
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "registrationForm.email.required");
         if (!errors.hasFieldErrors("email")) {
-            if (!GenericValidator.isEmail(userForm.getEmail())) {
+            if (userService.checkEmail(userForm.getEmail())) {
+                errors.rejectValue("email", "registrationForm.email.duplicate");
+            } else if (!GenericValidator.isEmail(userForm.getEmail())) {
                 errors.rejectValue("email", "registrationForm.email.invalid");
             }
         }

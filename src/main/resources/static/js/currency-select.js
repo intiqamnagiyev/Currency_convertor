@@ -9,7 +9,7 @@ const currencyData = [
     text: "EUR -  European Union",
     value: "EUR",
     selected: false,
-    imageSrc: "./img/eur.png",
+    imageSrc: "/img/eur.png",
   },
 ];
 
