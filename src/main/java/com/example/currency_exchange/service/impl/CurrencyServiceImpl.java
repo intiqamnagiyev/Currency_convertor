@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
-    @Value("${flexible-list.apiUrl}")
+    @Value("${currency.apiUrl}")
     private String baseUrlApi;
 
     @Override
