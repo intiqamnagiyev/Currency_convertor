@@ -99,20 +99,25 @@ public class WebController {
         } else {
             final User user = userService.getUserByEmail(loginUser);
             session.setAttribute("user", user);
-            mav.setViewName("redirect:/web/main-page");
+            mav.setViewName("redirect:/web/main-page-auth");
         }
 
         return mav;
     }
 
-    @GetMapping("/main-page")
+    @GetMapping("/main-page-auth")
     public ModelAndView mainPage(HttpSession session) {
-        final ModelAndView mav = new ModelAndView();
+        final ModelAndView mav = new ModelAndView("main-page-authorized");
         final User user = (User) session.getAttribute("user");
-        if (user != null) {
             mav.addObject("fullName", user.getFullName());
             mav.setViewName("main-page-authorized");
-        } else mav.setViewName("main-page");
+        return mav;
+    }
+
+    @GetMapping("/main-page-guest")
+    public ModelAndView mainPageGuest() {
+        final ModelAndView mav = new ModelAndView();
+        mav.setViewName("main-page");
         return mav;
     }
 
