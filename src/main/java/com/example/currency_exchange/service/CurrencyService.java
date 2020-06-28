@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 
 @Service
 public interface CurrencyService {
-    Currency convert(String from, String to, BigDecimal amount, String fromDate, String toDate);
+    BigDecimal convert(String from, String to, BigDecimal amount, String fromDate, String toDate);
 }

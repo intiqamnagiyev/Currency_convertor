@@ -5,10 +5,7 @@ import com.example.currency_exchange.service.CurrencyService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,14 +23,12 @@ public class CurrencyController {
     }
 
     @GetMapping()
-    public ModelAndView convert(@RequestParam("from") String from,
-                                @RequestParam("to") String to,
-                                @RequestParam("amount") BigDecimal amount,
+    @ResponseBody
+    public BigDecimal convert(@RequestParam(value = "from",required = false) String from,
+                                @RequestParam(value = "to" ,required = false) String to,
+                                @RequestParam(value = "amount", required = false) BigDecimal amount,
                                 @RequestParam(value = "fromDate", required = false, defaultValue = "") String fromDate,
                                 @RequestParam(value = "toDate", required = false, defaultValue = "") String toDate) {
-        final ModelAndView mav = new ModelAndView("main-page-authorized");
-        Currency currency= currencyService.convert(from, to, amount, fromDate, toDate);
-        mav.addObject("currency", currency);
-        return mav;
+        return currencyService.convert(from, to, amount, fromDate, toDate);
     }
 }

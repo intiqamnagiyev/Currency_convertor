@@ -50,7 +50,7 @@
                     <div id="exchange-from"></div>
                     <div id="exchange-from-result" class="exchange-result">
                         <span class="exchange-result-currency">$</span>
-                        <input type="text" class="currency-input" name="from" value="222" placeholder="000">
+                        <input id="fromCurrency" type="text" class="currency-input" name="from" value="" placeholder="000">
                     </div>
                     <div class="datepicker-wrapper datepicker-wrapper-left">
                             <span class="select-name">
@@ -69,7 +69,7 @@
                     <div id="exchange-to"></div>
                     <div id="exchange-to-result" class="exchange-result">
                         <span class="exchange-result-currency">€</span>
-                        <input type="text" class="currency-input" name="to" value="222" placeholder="000">
+                        <input id="toCurrency" type="text" class="currency-input" name="to" value="" placeholder="000">
                     </div>
 
                     <div class="datepicker-wrapper">
@@ -91,6 +91,25 @@
     </div>
 
 </section>
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#fromCurrency').change(function () {
+            var fromCurrency=$('#fromCurrency').val();
+//line 50 and 69
+            $.ajax({
+                type:'GET',
+                // data:{amount:fromCurrency},
+                url:'/currency',
+                success: function (result) {
+                    console.log(result);
+                    $('#toCurrency').val(result);
+                }
+            });
+        });
+    });
+</script>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/jquery-ui.min.js}"></script>
 <script type="text/javascript"
