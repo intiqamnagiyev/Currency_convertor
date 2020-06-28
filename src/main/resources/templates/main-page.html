@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+        lang="en">
 
 
 <!-- Mirrored from www.alexshmyrkov.space/Currency Exchange/main-page.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 24 Jun 2020 19:34:12 GMT -->
@@ -7,25 +8,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main-page.css">
-    <link rel="stylesheet" href="css/custom-select.css">
+    <link rel="stylesheet" th:href="@{/css/main-page.css}">
+    <link rel="stylesheet" th:href="@{/css/custom-select.css}">
     <title>Exchange: Main Page</title>
 </head>
 
 <body>
     <header class="main-header">
-        <a href="main-page.html" class="main-header-logo"><img src="img/iba-tech-logo-white.svg"
+        <a href="main-page.html" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
                                                                  alt="IBA Tech Academy"></a>
         <div class="main-header-wrapper">
             <div class="main-header-profile-wrapper">
                 <div class="main-header-profile-credentials">
                     <span class="main-header-username">Guest</span>
                     <div class="log-out-block">
-                        <img src="img/log-out-icon.svg" alt="Log out">
+                        <img th:src="@{/img/log-out-icon.svg}" alt="Log out">
                         <a href="index.html" class="log-out-btn">Log out</a>
                     </div>
                 </div>
-                <img class="main-header-user-icon" src="img/user-icon-with-background.svg" alt="User Icon">
+                <img class="main-header-user-icon" th:src="@{/img/user-icon-with-background.svg}" alt="User Icon">
             </div>
         </div>
     </header>
@@ -76,7 +77,7 @@
     </section>
     <script src="../../cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="../../cdn.rawgit.com/prashantchaudhary/ddslick/master/jquery.ddslick.min.js"></script>
-    <script src="js/currency-select.js"></script>
+    <script th:src="@{/js/currency-select.js}"></script>
 </body>
 
 
