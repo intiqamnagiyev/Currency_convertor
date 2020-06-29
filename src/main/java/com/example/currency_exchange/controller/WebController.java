@@ -2,6 +2,7 @@ package com.example.currency_exchange.controller;
 
 import com.example.currency_exchange.entity.User;
 import com.example.currency_exchange.ex.UserNotFoundEx;
+import com.example.currency_exchange.model.CurrentCurrency;
 import com.example.currency_exchange.model.LoginUser;
 import com.example.currency_exchange.model.UserForm;
 import com.example.currency_exchange.service.CurrencyService;
@@ -123,6 +124,13 @@ public class WebController {
         final ModelAndView mav = new ModelAndView();
         mav.setViewName("main-page");
         return mav;
+    }
+
+    @GetMapping("/current-currency")
+    @ResponseBody
+    public CurrentCurrency getCurrentCurrency(){
+
+        return new CurrentCurrency("1USD/2EUR","1EUR/5USD");
     }
 
     @ExceptionHandler({UserNotFoundEx.class})

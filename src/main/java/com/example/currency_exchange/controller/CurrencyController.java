@@ -24,8 +24,8 @@ public class CurrencyController {
 
     @GetMapping()
     @ResponseBody
-    public BigDecimal convert(@RequestParam(value = "from",required = false) String from,
-                                @RequestParam(value = "to" ,required = false) String to,
+    public BigDecimal convert(@RequestParam(value = "from",required = false,defaultValue = "USD") String from,
+                                @RequestParam(value = "to" ,required = false, defaultValue = "EUR") String to,
                                 @RequestParam(value = "amount", required = false) BigDecimal amount,
                                 @RequestParam(value = "fromDate", required = false, defaultValue = "") String fromDate,
                                 @RequestParam(value = "toDate", required = false, defaultValue = "") String toDate) {

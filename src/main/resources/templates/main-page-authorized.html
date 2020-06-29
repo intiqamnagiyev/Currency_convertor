@@ -50,7 +50,7 @@
                     <div id="exchange-from"></div>
                     <div id="exchange-from-result" class="exchange-result">
                         <span class="exchange-result-currency">$</span>
-                        <input id="fromCurrency" type="text" class="currency-input" name="from" value="" placeholder="000">
+                        <input id="fromCurrencyAmount" type="text" class="currency-input" name="from" value="" placeholder="000">
                     </div>
                     <div class="datepicker-wrapper datepicker-wrapper-left">
                             <span class="select-name">
@@ -83,9 +83,9 @@
 
             </div>
             <div class="form-footer">
-                <div class="rate">1USD/0.89EUR</div>
+                <div class="rate" id="rateUSD">1USD/0.89EUR</div>
                 <a href="rates.html" type="submit" class="reset-section-container-form-login">Exchange</a>
-                <div class="rate">1EUR/1.12USD</div>
+                <div class="rate" id="rateEURO">1EUR/1.12USD</div>
             </div>
         </form>
     </div>
@@ -95,14 +95,26 @@
 
 <script>
     $(document).ready(function () {
-        $('#fromCurrency').change(function () {
-            var fromCurrency=$('#fromCurrency').val();
+        $.ajax({
+            type:'GET',
+            url:'/web/current-currency',
+            success: function (data) {
+                $('#rateUSD').html(data.usdToEur);
+                $('#rateEURO').html(data.euroToUsd);
+            }
+        })
+
+
+        $('#fromCurrencyAmount').change(function () {
+            var fromCurrencyAmount=$('#fromCurrencyAmount').val();
 //line 50 and 69
-            var fromCurName=$('#exchange-from').val();
+            // i need to take  currency names for send as a parameter (exchange-from and exchange-to) "USD" or "EURO"
+            var fromCurName=$('#fromCurr').val();
             console.log('name==' + fromCurName);
+
             $.ajax({
                 type:'GET',
-                // data:{amount:fromCurrency},
+                data:{amount:fromCurrencyAmount},
                 url:'/currency',
                 success: function (result) {
                     console.log(result);
