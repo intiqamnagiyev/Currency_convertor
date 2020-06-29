@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 
 @Log4j2
 @Controller
-@RequestMapping("/web")
+@RequestMapping({"/web", "/"})
 public class WebController {
     private final UserService userService;
     private final CurrencyService currencyService;
@@ -52,6 +52,10 @@ public class WebController {
         }
     }
 
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/web/login";
+    }
 
     /**
      * http://localhost:8080/web/register
@@ -109,8 +113,8 @@ public class WebController {
     public ModelAndView mainPage(HttpSession session) {
         final ModelAndView mav = new ModelAndView("main-page-authorized");
         final User user = (User) session.getAttribute("user");
-            mav.addObject("fullName", user.getFullName());
-            mav.setViewName("main-page-authorized");
+        mav.addObject("fullName", user.getFullName());
+        mav.setViewName("main-page-authorized");
         return mav;
     }
 
@@ -122,7 +126,7 @@ public class WebController {
     }
 
     @ExceptionHandler({UserNotFoundEx.class})
-    public ModelAndView userNotFoundHandle(){
+    public ModelAndView userNotFoundHandle() {
         log.info("caught: UserNotFoundEx");
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("exMessage", "email or password is incorrect");

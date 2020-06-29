@@ -98,6 +98,8 @@
         $('#fromCurrency').change(function () {
             var fromCurrency=$('#fromCurrency').val();
 //line 50 and 69
+            var fromCurName=$('#exchange-from').val();
+            console.log('name==' + fromCurName);
             $.ajax({
                 type:'GET',
                 // data:{amount:fromCurrency},
