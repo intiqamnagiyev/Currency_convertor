@@ -15,7 +15,7 @@
 <div class="page-container">
 
     <header class="header">
-        <a href="registration.html" class="header-link"><img th:src="@{/img/iba-logo-sky-blue.svg}" alt="IBA Tech Academy"></a>
+        <a href="/web/register" class="header-link"><img th:src="@{/img/iba-logo-sky-blue.svg}" alt="IBA Tech Academy"></a>
     </header>
 
     <section class="registration-section">
@@ -23,7 +23,7 @@
         <div class="registration-section-container">
             <h1 class="registration-section-container-title">Create An Account</h1>
             <p class="registration-section-container-description">Create your account, it takes less than a minute. If
-                you already have an account - <a href="index.html"
+                you already have an account - <a href="/web/login"
                                                  class="registration-section-container-description-link">login</a></p>
             <form method="post" th:action="@{/web/register}" th:object="${form}" class="registration-section-container-form">
                 <div class="registration-section-container-form-input-wrapper">
