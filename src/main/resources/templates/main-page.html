@@ -53,7 +53,7 @@
                         </div>
                         <div id="exchange-from-result" class="exchange-result">
                             <span class="exchange-result-currency">$</span>
-                            <input type="text" class="currency-input" value="" placeholder="000">
+                            <input type="text" id="fromCurrencyAmount" class="currency-input" value="" placeholder="000">
                         </div>
                     </div>
 
@@ -71,7 +71,7 @@
                         </div>
                         <div id="exchange-to-result" class="exchange-result">
                             <span class="exchange-result-currency">€</span>
-                            <input type="text" class="currency-input" value="" placeholder="000">
+                            <input type="text" id="toCurrency" class="currency-input" value="" placeholder="000">
                         </div>
                     </div>
 
@@ -90,16 +90,13 @@
         </div>
 
 
-
-
     </section>
-    <script src="../../cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="../../cdn.rawgit.com/prashantchaudhary/ddslick/master/jquery.ddslick.min.js"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.ddslick.min.js}"></script>
     <script th:src="@{/js/currency-select.js}"></script>
-
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script>
         $(document).ready(function () {
-
             $('#fromCurrencyAmount').change(function () {
                 var fromCurrencyAmount = $('#fromCurrencyAmount').val();
                 var fromCurName = $('#fromCurr').val();
