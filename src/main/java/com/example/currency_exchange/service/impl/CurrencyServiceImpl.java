@@ -21,9 +21,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     private final CurrencyRepository currencyRepository;
     @Value("${currency.apiUrl}")
     private String baseUrlApi;
-    @Value("${base.currency}")
-    private String baseCur;
-
 
     public CurrencyServiceImpl(CurrencyRepository currencyRepository) {
         this.currencyRepository = currencyRepository;
