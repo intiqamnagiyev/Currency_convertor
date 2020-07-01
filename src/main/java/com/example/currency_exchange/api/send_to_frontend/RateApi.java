@@ -1,4 +1,4 @@
-package com.example.currency_exchange.api.external;
+package com.example.currency_exchange.api.send_to_frontend;
 
 
 import lombok.Data;

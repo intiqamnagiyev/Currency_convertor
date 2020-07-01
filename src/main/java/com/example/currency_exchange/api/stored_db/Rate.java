@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -19,10 +20,10 @@ public class Rate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private String value;
+    private BigDecimal value;
     private LocalDate date;
 
-    public Rate(String name, String value, LocalDate date) {
+    public Rate(String name, BigDecimal value, LocalDate date) {
         this.name = name;
         this.value = value;
         this.date = date;

@@ -1,7 +1,7 @@
 package com.example.currency_exchange.service.impl;
 
-import com.example.currency_exchange.api.external.Currency;
-import com.example.currency_exchange.api.external.RateApi;
+import com.example.currency_exchange.api.external.CurrencyApi;
+import com.example.currency_exchange.api.send_to_frontend.RateApi;
 import com.example.currency_exchange.api.stored_db.Rate;
 import com.example.currency_exchange.repository.CurrencyRepository;
 import com.example.currency_exchange.service.CurrencyService;
@@ -31,13 +31,13 @@ public class CurrencyServiceImpl implements CurrencyService {
 
 
     public BigDecimal convert1(String from, String to, BigDecimal amount) {
-        final Currency body = parseWithHistory();
+        final CurrencyApi body = parseWithHistory();
         if (body != null) {
             boolean isExpired = checkDateExpired(LocalDate.parse(body.getDate()));
             if (isExpired) {
                 final List<Rate> rates = body.getRates().entrySet()
                         .stream()
-                        .map(entry -> new Rate(entry.getKey(), entry.getValue(), LocalDate.parse(body.getDate())))
+                        .map(entry -> new Rate(entry.getKey(), BigDecimal.valueOf(Double.parseDouble(entry.getValue())), LocalDate.parse(body.getDate())))
                         .collect(Collectors.toList());
                 final List<Rate> savedRates = currencyRepository.saveAll(rates);
             }
@@ -50,12 +50,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public BigDecimal convert(String from, String to, BigDecimal amount) {
-        final RateApi rates = parse(url(from, to));
-        if (rates==null) return BigDecimal.ZERO;
-              return rates.getRates()
+        final RateApi rates = parse(generateUrlForSingleRate(from, to));
+        if (rates == null) return BigDecimal.ZERO;
+        return rates.getRates()
                 .getOrDefault(to, BigDecimal.ONE)
-                      .multiply(amount)
-                .setScale(3,RoundingMode.CEILING).
+                .multiply(amount)
+                .setScale(3, RoundingMode.CEILING).
                         stripTrailingZeros();
     }
 
@@ -68,18 +68,17 @@ public class CurrencyServiceImpl implements CurrencyService {
                 .isBefore(apiDate);
     }
 
-    private Currency parseWithHistory() {
-        return new RestTemplate().getForEntity(baseUrlApi + "latest", Currency.class).getBody();
+    private CurrencyApi parseWithHistory() {
+        return new RestTemplate().getForEntity(baseUrlApi + "latest", CurrencyApi.class).getBody();
     }
 
     private RateApi parse(String url) {
         return new RestTemplate().getForEntity(url, RateApi.class).getBody();
     }
 
-    private String url(String from, String to) {
+    private String generateUrlForSingleRate(String from, String to) {
         return String.format(baseUrlApi + "latest?symbols=%s&base=%s", to, from);
     }
-
 
 
 }

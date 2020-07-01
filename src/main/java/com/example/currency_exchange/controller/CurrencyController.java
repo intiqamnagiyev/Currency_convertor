@@ -29,6 +29,6 @@ public class CurrencyController {
          return currencyService.convert(from, to, amount);
     }
 
-
+//todo RateNotFoundex handler
 
 }
