@@ -126,7 +126,9 @@ public class WebController {
     @GetMapping("/main-page-guest")
     public ModelAndView mainPageGuest() {
         final ModelAndView mav = new ModelAndView("main-page");
-        final CurrencyResponse currencyResponse = new CurrencyResponse(BigDecimal.TEN, BigDecimal.valueOf(5));
+        final BigDecimal usd = currencyService.convert("USD", "EUR", BigDecimal.ONE);
+        final BigDecimal eur = currencyService.convert("EUR", "USD", BigDecimal.ONE);
+        final CurrencyResponse currencyResponse = new CurrencyResponse(usd, eur);
         mav.addObject("currencyResponse", currencyResponse);
         return mav;
     }
