@@ -2,7 +2,7 @@ package com.example.currency_exchange.controller;
 
 import com.example.currency_exchange.entity.User;
 import com.example.currency_exchange.ex.UserNotFoundEx;
-import com.example.currency_exchange.model.CurrentCurrency;
+import com.example.currency_exchange.model.CurrencyResponse;
 import com.example.currency_exchange.model.LoginUser;
 import com.example.currency_exchange.model.UserForm;
 import com.example.currency_exchange.service.CurrencyService;
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 
 @Log4j2
 @Controller
@@ -113,24 +114,21 @@ public class WebController {
     @GetMapping("/main-page-auth")
     public ModelAndView mainPage(HttpSession session) {
         final ModelAndView mav = new ModelAndView("main-page-authorized");
+        final BigDecimal usd = currencyService.convert("USD", "EUR", BigDecimal.ONE);
+        final BigDecimal eur = currencyService.convert("EUR", "USD", BigDecimal.ONE);
+        final CurrencyResponse currencyResponse = new CurrencyResponse(usd, eur);
         final User user = (User) session.getAttribute("user");
         mav.addObject("fullName", user.getFullName());
-        mav.setViewName("main-page-authorized");
+        mav.addObject("currencyResponse", currencyResponse);
         return mav;
     }
 
     @GetMapping("/main-page-guest")
     public ModelAndView mainPageGuest() {
-        final ModelAndView mav = new ModelAndView();
-        mav.setViewName("main-page");
+        final ModelAndView mav = new ModelAndView("main-page");
+        final CurrencyResponse currencyResponse = new CurrencyResponse(BigDecimal.TEN, BigDecimal.valueOf(5));
+        mav.addObject("currencyResponse", currencyResponse);
         return mav;
-    }
-
-    @GetMapping("/current-currency")
-    @ResponseBody
-    public CurrentCurrency getCurrentCurrency(){
-
-        return new CurrentCurrency("1USD/2EUR","1EUR/5USD");
     }
 
     @ExceptionHandler({UserNotFoundEx.class})

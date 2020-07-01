@@ -1,4 +1,4 @@
-package com.example.currency_exchange.model;
+package com.example.currency_exchange.api.external;
 
 import lombok.Data;
 
