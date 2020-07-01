@@ -8,25 +8,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/rates.css">
-    <link rel="stylesheet" href="css/custom-select.css">
+    <link rel="stylesheet" th:href="@{/css/rates.css}">
+    <link rel="stylesheet" th:href="@{/css/custom-select.css}">
     <title>Exchange: Rates</title>
 </head>
 
 <body>
     <header class="main-header">
-        <a href="main-page.html" class="main-header-logo"><img src="img/iba-tech-logo-white.svg"
+        <a href="main-page.html" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
                                                                  alt="IBA Tech Academy"></a>
         <div class="main-header-wrapper">
             <div class="main-header-profile-wrapper">
                 <div class="main-header-profile-credentials">
                     <span class="main-header-username">Anatolii Safronov</span>
                     <div class="log-out-block">
-                        <img src="img/log-out-icon.svg" alt="Log out">
+                        <img th:src="@{/img/log-out-icon.svg}" alt="Log out">
                         <a href="index.html" class="log-out-btn">Log out</a>
                     </div>
                 </div>
-                <img class="main-header-user-icon" src="img/user-icon-with-background.svg" alt="User Icon">
+                <img class="main-header-user-icon" th:src="@{/img/user-icon-with-background.svg}" alt="User Icon">
             </div>
         </div>
     </header>
@@ -118,7 +118,7 @@
 
 
     </section>
-    <script src="../../cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
 
 </body>
 
