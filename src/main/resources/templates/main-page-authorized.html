@@ -14,7 +14,7 @@
 
 <body>
 <header class="main-header">
-    <a href="main-page.html" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
+    <a href="/web/main-page-auth" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
                                                            alt="IBA Tech Academy"></a>
     <div class="main-header-wrapper">
         <div class="main-header-profile-wrapper">
@@ -23,7 +23,7 @@
                 <div class="log-out-block">
 
                     <img th:src="@{/img/log-out-icon.svg}" alt="Log out">
-                    <a href="/web/login" class="log-out-btn">Log out</a>
+                    <a href="/web/logout" class="log-out-btn">Log out</a>
                 </div>
             </div>
             <img class="main-header-user-icon" th:src="@{/img/user-icon-with-background.svg}" alt="User Icon">
@@ -47,7 +47,14 @@
                         <span class="select-name">
                             From
                         </span>
-                    <div id="exchange-from"></div>
+<!--                    <div id="exchange-from"></div>-->
+                    <div>
+                        <label for="fromCurr">Choose a currency:</label>
+                        <select name="base" id="fromCurr">
+                       <option value="">Choose Currency</option>
+                            <option th:each="val:${values}" th:text="${val}"></option>
+                        </select>
+                    </div>
                     <div id="exchange-from-result" class="exchange-result">
                         <span class="exchange-result-currency">$</span>
                         <input id="fromCurrencyAmount" type="text" class="currency-input" name="from" value=""
@@ -67,7 +74,14 @@
                         <span class="select-name">
                             To
                         </span>
-                    <div id="exchange-to"></div>
+<!--                    <div id="exchange-to"></div>-->
+                    <div>
+                        <label for="toCurr">Choose a currency:</label>
+                        <select name="base" id="toCurr">
+                            <option value="">Choose Currency</option>
+                            <option th:each="val:${values}" th:text="${val}"></option>
+                        </select>
+                    </div>
                     <div id="exchange-to-result" class="exchange-result">
                         <span class="exchange-result-currency">€</span>
                         <input id="toCurrency" type="text" class="currency-input" name="to" value="" placeholder="000">
@@ -83,10 +97,15 @@
                 </div>
 
             </div>
-            <div class="form-footer">
+<!--            <div class="form-footer">
                 <div class="rate" id="rateUSD" th:text="'1USD/'+${currencyResponse.usdToEur}+'EUR'"></div>
                 <a href="rates.html" type="submit" class="reset-section-container-form-login">Exchange</a>
                 <div class="rate" id="rateEURO" th:text="'1EUR/'+${currencyResponse.eurToUsd}+'USD'"></div>
+            </div>-->
+            <div class="form-footer">
+                <div class="rate">1USD/0.89EUR</div>
+                <a th:href="@{/rates}" type="submit" class="reset-section-container-form-login">Exchange</a>
+                <div class="rate">1EUR/1.12USD</div>
             </div>
         </form>
     </div>
@@ -99,14 +118,18 @@
 
         $('#fromCurrencyAmount').change(function () {
             var fromCurrencyAmount = $('#fromCurrencyAmount').val();
-//line 50 and 69
-//i need to take  currency names for send as a parameter (exchange-from and exchange-to) "USD" or "EURO"
             var fromCurName = $('#fromCurr').val();
-            console.log('name==' + fromCurName);
+            var toCurName = $('#toCurr').val();
+            console.log('from name==' + fromCurName);
+            console.log('to name==' + toCurName);
 
             $.ajax({
                 type: 'GET',
-                data: {amount: fromCurrencyAmount},
+                data: {
+                    from:fromCurName,
+                    to:toCurName,
+                    amount: fromCurrencyAmount
+                },
                 url: '/currency',
                 success: function (result) {
                     console.log(result);

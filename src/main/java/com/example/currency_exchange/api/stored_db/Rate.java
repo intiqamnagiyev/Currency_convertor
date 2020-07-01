@@ -21,6 +21,7 @@ public class Rate {
     private String name;
     private String value;
     private LocalDate date;
+
     public Rate(String name, String value, LocalDate date) {
         this.name = name;
         this.value = value;

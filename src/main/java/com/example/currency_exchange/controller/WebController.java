@@ -2,7 +2,7 @@ package com.example.currency_exchange.controller;
 
 import com.example.currency_exchange.entity.User;
 import com.example.currency_exchange.ex.UserNotFoundEx;
-import com.example.currency_exchange.model.CurrencyResponse;
+import com.example.currency_exchange.model.CurrencyNames;
 import com.example.currency_exchange.model.LoginUser;
 import com.example.currency_exchange.model.UserForm;
 import com.example.currency_exchange.service.CurrencyService;
@@ -18,9 +18,14 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -103,7 +108,7 @@ public class WebController {
         if (result.hasErrors()) {
             mav.setViewName("index");
         } else {
-            final User user = userService.getUserByEmail(loginUser);
+            final User user = userService.getUserByEmail(loginUser.getEmail());
             session.setAttribute("user", user);
             mav.setViewName("redirect:/web/main-page-auth");
         }
@@ -114,23 +119,24 @@ public class WebController {
     @GetMapping("/main-page-auth")
     public ModelAndView mainPage(HttpSession session) {
         final ModelAndView mav = new ModelAndView("main-page-authorized");
-        final BigDecimal usd = currencyService.convert("USD", "EUR", BigDecimal.ONE);
-        final BigDecimal eur = currencyService.convert("EUR", "USD", BigDecimal.ONE);
-        final CurrencyResponse currencyResponse = new CurrencyResponse(usd, eur);
+        final List<String> currencyNames = Arrays.stream(CurrencyNames.values())
+                .map(Enum::name).collect(Collectors.toList());
+        mav.addObject("values", currencyNames);
+
         final User user = (User) session.getAttribute("user");
         mav.addObject("fullName", user.getFullName());
-        mav.addObject("currencyResponse", currencyResponse);
         return mav;
     }
 
     @GetMapping("/main-page-guest")
     public ModelAndView mainPageGuest() {
-        final ModelAndView mav = new ModelAndView("main-page");
-        final BigDecimal usd = currencyService.convert("USD", "EUR", BigDecimal.ONE);
-        final BigDecimal eur = currencyService.convert("EUR", "USD", BigDecimal.ONE);
-        final CurrencyResponse currencyResponse = new CurrencyResponse(usd, eur);
-        mav.addObject("currencyResponse", currencyResponse);
-        return mav;
+        return new ModelAndView("main-page");
+    }
+
+    @GetMapping("/logout")
+    public RedirectView logout(HttpSession session) {
+        session.invalidate();
+        return new RedirectView("/web/login");
     }
 
     @ExceptionHandler({UserNotFoundEx.class})

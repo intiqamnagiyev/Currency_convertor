@@ -14,7 +14,7 @@
 
 <body>
     <header class="main-header">
-        <a href="main-page.html" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
+        <a href="/web/main-page-guest" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
                                                                  alt="IBA Tech Academy"></a>
         <div class="main-header-wrapper">
             <div class="main-header-profile-wrapper">
@@ -22,7 +22,7 @@
                     <span class="main-header-username">Guest</span>
                     <div class="log-out-block">
                         <img th:src="@{/img/log-out-icon.svg}" alt="Log out">
-                        <a href="index.html" class="log-out-btn">Log out</a>
+                        <a href="/web/logout" class="log-out-btn">Log out</a>
                     </div>
                 </div>
                 <img class="main-header-user-icon" th:src="@{/img/user-icon-with-background.svg}" alt="User Icon">
@@ -62,10 +62,15 @@
                     </div>
 
                 </div>
-                <div class="form-footer">
+<!--                <div class="form-footer">
                     <div class="rate" id="rateUSD" th:text="'1USD/'+${currencyResponse.usdToEur}+'EUR'"></div>
                     <a href="rates.html" type="submit" class="reset-section-container-form-login">Exchange</a>
                     <div class="rate" id="rateEURO" th:text="'1EUR/'+${currencyResponse.eurToUsd}+'USD'"></div>
+                </div>-->
+                <div class="form-footer">
+                    <div class="rate">1USD/0.89EUR</div>
+                    <a th:href="@{/rates}" type="submit" class="reset-section-container-form-login">Exchange</a>
+                    <div class="rate">1EUR/1.12USD</div>
                 </div>
             </form>
         </div>

@@ -23,11 +23,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByEmail(LoginUser loginUser) {
-        return userRepository.findByEmail(loginUser.getEmail())
-                .filter(u -> BCrypt.checkpw(loginUser.getPassword(), u.getPassword()))
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundEx::new);
-
     }
 
     @Override

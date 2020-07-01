@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public interface UserService {
     User save(User user);
 
-    User getUserByEmail(LoginUser loginUser);
+    User getUserByEmail(String email);
 
     boolean checkEmail(String email);
 }

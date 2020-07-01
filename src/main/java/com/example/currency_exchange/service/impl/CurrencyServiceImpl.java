@@ -51,11 +51,12 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public BigDecimal convert(String from, String to, BigDecimal amount) {
         final RateApi rates = parse(url(from, to));
-
-        return BigDecimal.valueOf(Double.parseDouble(rates.getRates().get(to)))
-                .multiply(amount)
-                .setScale(3,RoundingMode.CEILING)
-                .stripTrailingZeros();
+        if (rates==null) return BigDecimal.ZERO;
+              return rates.getRates()
+                .getOrDefault(to, BigDecimal.ONE)
+                      .multiply(amount)
+                .setScale(3,RoundingMode.CEILING).
+                        stripTrailingZeros();
     }
 
     private boolean checkDateExpired(LocalDate apiDate) {
@@ -79,9 +80,6 @@ public class CurrencyServiceImpl implements CurrencyService {
         return String.format(baseUrlApi + "latest?symbols=%s&base=%s", to, from);
     }
 
-    @Override
-    public List<Rate> getHistory(LocalDate fromDate, LocalDate toDate) {
-        return currencyRepository.findAllByDateBetween(fromDate, toDate);
 
-    }
+
 }

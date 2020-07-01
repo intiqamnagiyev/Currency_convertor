@@ -1,6 +1,7 @@
 package com.example.currency_exchange.validator;
 import com.example.currency_exchange.model.LoginUser;
 import com.example.currency_exchange.service.UserService;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -26,7 +27,10 @@ public class LoginUserValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "registrationForm.email.invalid");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password","registrationForm.password.enter");
-
+        final String password = userService.getUserByEmail(loginUser.getEmail()).getPassword();
+        if (!BCrypt.checkpw(loginUser.getPassword(), password)){
+            errors.rejectValue("password", "registrationForm.password.invalid");
+        }
     }
 
 
