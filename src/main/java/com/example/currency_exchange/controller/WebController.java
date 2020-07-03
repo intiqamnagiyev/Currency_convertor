@@ -131,7 +131,7 @@ public class WebController {
     @GetMapping("/main-page-guest")
     public ModelAndView mainPageGuest() {
 
-        final ModelAndView mav = new ModelAndView("main-page1");
+        final ModelAndView mav = new ModelAndView("main-page");
         List<String> collected = Arrays.stream(CurrencyNames.values()).map(Enum::name).collect(Collectors.toList());
         mav.addObject("values",collected);
         return mav;
