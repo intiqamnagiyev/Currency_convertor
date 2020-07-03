@@ -130,7 +130,11 @@ public class WebController {
 
     @GetMapping("/main-page-guest")
     public ModelAndView mainPageGuest() {
-        return new ModelAndView("main-page");
+
+        final ModelAndView mav = new ModelAndView("main-page1");
+        List<String> collected = Arrays.stream(CurrencyNames.values()).map(Enum::name).collect(Collectors.toList());
+        mav.addObject("values",collected);
+        return mav;
     }
 
     @GetMapping("/logout")

@@ -1,7 +1,6 @@
 package com.example.currency_exchange.repository;
 
 import com.example.currency_exchange.api.stored_db.Rate;
-import jdk.nashorn.internal.ir.CallNode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
