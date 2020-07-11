@@ -3,19 +3,18 @@
         lang="en">
 
 
-<!-- Mirrored from www.alexshmyrkov.space/Currency Exchange/rates.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 24 Jun 2020 19:35:49 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/rates.css">
-    <link rel="stylesheet" href="css/custom-select.css">
+    <link rel="stylesheet" th:href="@{/css/rates.css}">
+    <link rel="stylesheet" th:href="@{/css/custom-select.css}">
     <title>Exchange: Rates</title>
 </head>
 
 <body>
     <header class="main-header">
-        <a href="main-page.html" class="main-header-logo"><img src="img/iba-tech-logo-white.svg"
+        <a href="/web/main-page-auth" class="main-header-logo"><img th:src="@{/img/iba-tech-logo-white.svg}"
                                                                  alt="IBA Tech Academy"></a>
         <div class="main-header-wrapper">
             <div class="main-header-profile-wrapper">
@@ -23,10 +22,10 @@
                     <span class="main-header-username">Anatolii Safronov</span>
                     <div class="log-out-block">
                         <img src="img/log-out-icon.svg" alt="Log out">
-                        <a href="index.html" class="log-out-btn">Log out</a>
+                        <a href="/logout" class="log-out-btn">Log out</a>
                     </div>
                 </div>
-                <img class="main-header-user-icon" src="img/user-icon-with-background.svg" alt="User Icon">
+                <img class="main-header-user-icon" th:src="@{/img/user-icon-with-background.svg}" alt="User Icon">
             </div>
         </div>
     </header>
@@ -39,15 +38,16 @@
             <p class="exchange-content-subheading">
                 12 June 2020/21 June 2020
             </p>
-            <ul class="rates-list">
+            <ul class="rates-list" th:each="rate:${rates}" >
                 <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        21 June 2020
+                    <div class="rate" th:text="${rate.s}"></div>
+                    <p class="rate-date" th:text="${rate.s1}">
+
                     </p>
-                    <div class="rate">1EUR/1.12USD</div>
+                    <div class="rate" th:text="${rate.s2}"></div>
                 </li>
-                <li class="rates-item">
+
+<!--                <li class="rates-item">
                     <div class="rate">1USD/0.89EUR</div>
                     <p class="rate-date">
                         20 June 2020
@@ -109,20 +109,19 @@
                         12 June 2020
                     </p>
                     <div class="rate">1EUR/1.12USD</div>
-                </li>
+                </li>-->
 
             </ul>
-            <a href="main-page-authorized.html" class="reset-section-container-form-login button-rates">Go back</a>
+            <a href="/main-page-auth" class="reset-section-container-form-login button-rates">Go back</a>
 
         </div>
 
 
     </section>
-    <script src="../../cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
 
 </body>
 
 
 
-<!-- Mirrored from www.alexshmyrkov.space/Currency Exchange/rates.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 24 Jun 2020 19:35:50 GMT -->
 </html>

@@ -21,9 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,8 +131,8 @@ public class WebController {
         final ModelAndView mav = new ModelAndView("main-page");
         final List<String> currencyNames =
                 Arrays.stream(CurrencyNames.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
+                        .map(Enum::name)
+                        .collect(Collectors.toList());
         mav.addObject("values", currencyNames);
         return mav;
     }
