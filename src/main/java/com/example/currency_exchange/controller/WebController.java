@@ -81,7 +81,7 @@ public class WebController {
         if (result.hasErrors()) {
             mav.setViewName("registration");
         } else {
-            final User user = ConvertUtil.convert(userForm);
+            final User user = ConvertUtil.convert2(userForm);
             log.info(user);
             final User insertedUser = userService.save(user);
             ra.addFlashAttribute("message", String.format("%s! successfully registered", userForm.getFullName()));
