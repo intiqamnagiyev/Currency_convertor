@@ -39,7 +39,7 @@
         <h3 class="exchange-content-heading exchange-content-heading-absolute">
             Exchange rate date
         </h3>
-        <form action="#" class="exchange-form">
+        <form action="/rates" method="get" class="exchange-form">
 
             <div class="form-columns">
 
@@ -50,7 +50,7 @@
 <!--                    <div id="exchange-from"></div>-->
                     <div>
                         <label for="fromCurr">Choose a currency:</label>
-                        <select name="base" id="fromCurr">
+                        <select name="baseFrom" id="fromCurr">
                        <option value="">Choose Currency</option>
                             <option th:each="val:${values}" th:text="${val}"></option>
                         </select>
@@ -76,7 +76,7 @@
 <!--                    <div id="exchange-to"></div>-->
                     <div>
                         <label for="toCurr">Choose a currency:</label>
-                        <select name="base" id="toCurr">
+                        <select name="baseTo" id="toCurr">
                             <option value="">Choose Currency</option>
                             <option th:each="val:${values}" th:text="${val}"></option>
                         </select>
@@ -86,7 +86,7 @@
                         <input id="toCurrency" type="text" class="currency-input" name="to" value="" placeholder="000">
                     </div>
 
-                    <div class="datepicker-wrapper">
+                    <div class="datepicker-wrapper datepicker-wrapper-left">
                             <span class="select-name">
                                 To
                             </span>
@@ -103,7 +103,8 @@
 <!--            </div>-->
             <div class="form-footer">
                 <div class="rate">1USD/0.89EUR</div>
-                <a th:href="@{/rates}" type="submit" class="reset-section-container-form-login">Exchange</a>
+<!--                <a th:href="@{/rates}" type="submit" class="reset-section-container-form-login">Exchange</a>-->
+                <input type="submit"  class="reset-section-container-form-login" value="Exchange">
                 <div class="rate">1EUR/1.12USD</div>
             </div>
         </form>

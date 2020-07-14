@@ -22,6 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +123,6 @@ public class WebController {
         final List<String> currencyNames = Arrays.stream(CurrencyNames.values())
                 .map(Enum::name).collect(Collectors.toList());
         mav.addObject("values", currencyNames);
-
         final User user = (User) session.getAttribute("user");
         mav.addObject("fullName", user.getFullName());
         return mav;
@@ -134,6 +134,13 @@ public class WebController {
         final ModelAndView mav = new ModelAndView("main-page");
         List<String> collected = Arrays.stream(CurrencyNames.values()).map(Enum::name).collect(Collectors.toList());
         mav.addObject("values",collected);
+        return mav;
+    }
+
+    @GetMapping("/rates")
+    public ModelAndView ratesa(HttpSession session, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("baseFrom") String baseFrom, @RequestParam("baseTo") String baseTo){
+        final ModelAndView mav = new ModelAndView("rates");
+        fromDate =
         return mav;
     }
 
