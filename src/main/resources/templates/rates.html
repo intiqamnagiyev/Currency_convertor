@@ -36,16 +36,15 @@
             <h3 class="exchange-content-heading">
                 Exchange rate dates
             </h3>
-            <p class="exchange-content-subheading">
-                ${fromDate}/${toDate}
+            <p th:text="${fromDate}" class="exchange-content-subheading">/ 10 July
             </p>
 
             <ul th:each="rate : ${rates}" class="rates-list">
                 <li class="rates-item">
-                    <div th:text="1${baseFrom}/${rate.value}${baseTo}" class="rate"></div>
+                    <div th:text="${baseFrom}" class="rate"></div>
                     <p th:text="${rate.date}" class="rate-date">
                     </p>
-                    <div th:text="1${baseTo}/${rate.inverseValue}${baseFrom}" class="rate"></div>
+                    <div th:text="${baseTo}" class="rate"></div>
                 </li>
             </ul>
 
