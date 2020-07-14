@@ -20,7 +20,7 @@
         <div class="main-header-wrapper">
             <div class="main-header-profile-wrapper">
                 <div class="main-header-profile-credentials">
-                    <span class="main-header-username">Anatolii Safronov</span>
+                    <span class="main-header-username">${fullName}</span>
                     <div class="log-out-block">
                         <img th:src="@{/img/log-out-icon.svg}" alt="Log out">
                         <a href="index.html" class="log-out-btn">Log out</a>
@@ -37,82 +37,92 @@
                 Exchange rate dates
             </h3>
             <p class="exchange-content-subheading">
-                12 June 2020/21 June 2020
+                ${fromDate}/${toDate}
             </p>
-            <ul class="rates-list">
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        21 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        20 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        19 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        18 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        17 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        16 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        15 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        14 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        13 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
-                <li class="rates-item">
-                    <div class="rate">1USD/0.89EUR</div>
-                    <p class="rate-date">
-                        12 June 2020
-                    </p>
-                    <div class="rate">1EUR/1.12USD</div>
-                </li>
 
+            <ul th:each="rate : ${rates}" class="rates-list">
+                <li class="rates-item">
+                    <div th:text="1${baseFrom}/${rate.value}${baseTo}" class="rate"></div>
+                    <p th:text="${rate.date}" class="rate-date">
+                    </p>
+                    <div th:text="1${baseTo}/${rate.inverseValue}${baseFrom}" class="rate"></div>
+                </li>
             </ul>
-            <a href="main-page-authorized.html" class="reset-section-container-form-login button-rates">Go back</a>
+
+<!--            <ul class="rates-list">-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        21 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        20 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        19 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        18 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        17 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        16 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        15 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        14 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        13 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+<!--                <li class="rates-item">-->
+<!--                    <div class="rate">1USD/0.89EUR</div>-->
+<!--                    <p class="rate-date">-->
+<!--                        12 June 2020-->
+<!--                    </p>-->
+<!--                    <div class="rate">1EUR/1.12USD</div>-->
+<!--                </li>-->
+
+<!--            </ul>-->
+            <a href="/main-page-auth" class="reset-section-container-form-login button-rates">Go back</a>
 
         </div>
 

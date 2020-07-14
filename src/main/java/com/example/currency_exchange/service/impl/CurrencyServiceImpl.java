@@ -70,9 +70,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 //        System.out.println("uraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         String url = generateUrlWithHistory(fromDate, toDate, baseFrom, baseTo);
         RateApiHistory rates = parseForHistory(url);
-
-        return null;
-
+        return rates.getRates().entrySet().stream().map(r ->
+            new RateSaver(r.getKey(),r.getValue().getRate().get(baseTo),(1/(r.getValue().getRate().get(baseTo)))
+        ).collect(Collectors.toList());
     }
 
     private boolean checkDateExpired(LocalDate apiDate) {

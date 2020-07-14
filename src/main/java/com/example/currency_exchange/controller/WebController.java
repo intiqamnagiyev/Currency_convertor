@@ -1,5 +1,6 @@
 package com.example.currency_exchange.controller;
 
+import com.example.currency_exchange.api.send_to_frontend.RateSaver;
 import com.example.currency_exchange.entity.User;
 import com.example.currency_exchange.ex.UserNotFoundEx;
 import com.example.currency_exchange.model.CurrencyNames;
@@ -138,9 +139,16 @@ public class WebController {
     }
 
     @GetMapping("/rates")
-    public ModelAndView ratesa(HttpSession session, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("baseFrom") String baseFrom, @RequestParam("baseTo") String baseTo){
+    public ModelAndView rates(HttpSession session, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("baseFrom") String baseFrom, @RequestParam("baseTo") String baseTo){
         final ModelAndView mav = new ModelAndView("rates");
-        fromDate =
+        User user = (User) session.getAttribute("user");
+        mav.addObject("fullName",user.getFullName());
+        mav.addObject("fromDate",fromDate);
+        mav.addObject("toDate",toDate);
+        List<RateSaver> rateSavers = currencyService.convertWithHistory(fromDate, "10 July", baseFrom, baseTo);
+        mav.addObject("rates",rateSavers);
+        mav.addObject("baseFrom",baseFrom);
+        mav.addObject("baseTo",baseTo);
         return mav;
     }
 
