@@ -1,6 +1,6 @@
 package com.example.currency_exchange.config;
 
-import com.example.currency_exchange.entity.User;
+import com.example.currency_exchange.entity.Person;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 public class CurrencySecurityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        final User user = (User) request.getSession().getAttribute("user");
+        final Person person = (Person) request.getSession().getAttribute("person");
         boolean flag = false;
 
         if (request.getRequestURI().endsWith("/main-page-auth")) {
-            if (user == null) {
+            if (person == null) {
                 response.sendRedirect("/web/main-page-guest");
             } else flag = true;
         } else flag = true;

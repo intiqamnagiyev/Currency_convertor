@@ -1,6 +1,6 @@
 package com.example.currency_exchange.validator;
-import com.example.currency_exchange.model.LoginUser;
-import com.example.currency_exchange.service.UserService;
+import com.example.currency_exchange.model.LoginPerson;
+import com.example.currency_exchange.service.PersonService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -9,26 +9,26 @@ import org.springframework.validation.Validator;
 
 
 @Component
-public class LoginUserValidator implements Validator {
-    private final UserService userService;
+public class LoginPersonValidator implements Validator {
+    private final PersonService personService;
 
-    public LoginUserValidator(UserService userService) {
-        this.userService = userService;
+    public LoginPersonValidator(PersonService personService) {
+        this.personService = personService;
     }
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return aClass == LoginUser.class;
+        return aClass == LoginPerson.class;
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        LoginUser loginUser = (LoginUser) o;
+        LoginPerson loginPerson = (LoginPerson) o;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "registrationForm.email.invalid");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password","registrationForm.password.enter");
-        final String password = userService.getUserByEmail(loginUser.getEmail()).getPassword();
-        if (!BCrypt.checkpw(loginUser.getPassword(), password)){
+        final String password = personService.getPersonByEmail(loginPerson.getEmail()).getPassword();
+        if (!BCrypt.checkpw(loginPerson.getPassword(), password)){
             errors.rejectValue("password", "registrationForm.password.invalid");
         }
     }

@@ -1,17 +1,22 @@
 package com.example.currency_exchange.controller;
 
 import com.example.currency_exchange.api.send_to_frontend.RateSaver;
-import com.example.currency_exchange.entity.User;
-import com.example.currency_exchange.ex.UserNotFoundEx;
+import com.example.currency_exchange.entity.Person;
+import com.example.currency_exchange.entity.RegistrationToken;
+import com.example.currency_exchange.ex.PersonNotFoundEx;
 import com.example.currency_exchange.model.CurrencyNames;
-import com.example.currency_exchange.model.LoginUser;
-import com.example.currency_exchange.model.UserForm;
+import com.example.currency_exchange.model.LoginPerson;
+import com.example.currency_exchange.model.PersonForm;
+import com.example.currency_exchange.repository.RegistrationTokenRepo;
 import com.example.currency_exchange.service.CurrencyService;
-import com.example.currency_exchange.service.UserService;
+import com.example.currency_exchange.service.EmailService;
+import com.example.currency_exchange.service.PersonService;
 import com.example.currency_exchange.util.ConvertUtil;
-import com.example.currency_exchange.validator.LoginUserValidator;
+import com.example.currency_exchange.validator.LoginPersonValidator;
 import com.example.currency_exchange.validator.RegistrationFormValidator;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -22,10 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,18 +35,24 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping({"/web", "/"})
 public class WebController {
-    private final UserService userService;
+    @Value("${spring.mail.username}")
+    private String ourEmailAddress;
+    private final PersonService personService;
     private final CurrencyService currencyService;
     private final RegistrationFormValidator registrationFormValidator;
-    private final LoginUserValidator loginUserValidator;
+    private final LoginPersonValidator loginPersonValidator;
+    private final EmailService emailService;
+    private final RegistrationTokenRepo registrationTokenRepo;
 
-    public WebController(UserService userService, CurrencyService currencyService,
+    public WebController(PersonService personService, CurrencyService currencyService,
                          RegistrationFormValidator registrationFormValidator,
-                         LoginUserValidator loginUserValidator) {
-        this.userService = userService;
+                         LoginPersonValidator loginPersonValidator, EmailService emailService, RegistrationTokenRepo registrationTokenRepo) {
+        this.personService = personService;
         this.currencyService = currencyService;
         this.registrationFormValidator = registrationFormValidator;
-        this.loginUserValidator = loginUserValidator;
+        this.loginPersonValidator = loginPersonValidator;
+        this.emailService = emailService;
+        this.registrationTokenRepo = registrationTokenRepo;
     }
 
 
@@ -53,11 +61,11 @@ public class WebController {
 
         Object target = dataBinder.getTarget();
 
-        if (target != null && target.getClass() == UserForm.class) {
+        if (target != null && target.getClass() == PersonForm.class) {
             dataBinder.setValidator(registrationFormValidator);
         }
-        if (target != null && target.getClass() == LoginUser.class) {
-            dataBinder.setValidator(loginUserValidator);
+        if (target != null && target.getClass() == LoginPerson.class) {
+            dataBinder.setValidator(loginPersonValidator);
         }
     }
 
@@ -72,24 +80,59 @@ public class WebController {
     @GetMapping("/register")
     public ModelAndView register() {
         final ModelAndView modelAndView = new ModelAndView("registration");
-        modelAndView.addObject("form", new UserForm());
+        modelAndView.addObject("form", new PersonForm());
         return modelAndView;
     }
 
     @PostMapping("/register")
     public ModelAndView register(@ModelAttribute("form")
-                                 @Validated UserForm userForm, BindingResult result, RedirectAttributes ra) {
+                                 @Validated PersonForm personForm, BindingResult result, RedirectAttributes ra) {
         final ModelAndView mav = new ModelAndView();
         if (result.hasErrors()) {
             mav.setViewName("registration");
         } else {
-            final User user = ConvertUtil.convert(userForm);
-            log.info(user);
-            final User insertedUser = userService.save(user);
-            ra.addFlashAttribute("message", String.format("%s! successfully registered", userForm.getFullName()));
-            mav.setViewName("redirect:/web/login");
+            final Person person = ConvertUtil.convert(personForm);
+            log.info(person);
+            final Person insertedPerson = personService.save(person);
+
+
+            RegistrationToken registrationToken = new RegistrationToken(insertedPerson);
+            registrationTokenRepo.save(registrationToken);
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(ourEmailAddress);
+            message.setTo(insertedPerson.getEmail());
+            message.setSubject("Confirmation of registration");
+            message.setText("To confirm your account, please click here : "
+                    + "http://localhost:8080/web/confirm-account?token=" + registrationToken.getToken());
+            emailService.send(message);
+
+            mav.addObject("email", insertedPerson.getEmail());
+            mav.setViewName("successfulRegistration");
+
+
+//
+//            ra.addFlashAttribute("message", String.format("%s! successfully registered", userForm.getFullName()));
+//            mav.setViewName("redirect:/web/login");
         }
         return mav;
+    }
+
+    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView confirmPersonAccount(ModelAndView modelAndView, @RequestParam("token") String confirmationToken) {
+        RegistrationToken token = registrationTokenRepo.findByToken(confirmationToken);
+
+        if (token != null) {
+            Person person = personService.getPersonByEmail(token.getPerson().getEmail());
+            person.setEnabled(true);
+            personService.save(person);
+            modelAndView.setViewName("accountVerified");
+        } else {
+            modelAndView.addObject("message", "The link is invalid or broken!");
+            modelAndView.setViewName("error");
+        }
+
+        return modelAndView;
     }
 
     /**
@@ -99,19 +142,19 @@ public class WebController {
     public ModelAndView loginPage(HttpSession session) {
         session.invalidate();
         final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("loginUser", new LoginUser());
+        mav.addObject("loginPerson", new LoginPerson());
         return mav;
     }
 
     @PostMapping("/login")
-    public ModelAndView postLogin(@ModelAttribute("loginUser") @Validated LoginUser loginUser,
+    public ModelAndView postLogin(@ModelAttribute("loginPerson") @Validated LoginPerson loginPerson,
                                   BindingResult result, HttpSession session) {
         ModelAndView mav = new ModelAndView();
         if (result.hasErrors()) {
             mav.setViewName("index");
         } else {
-            final User user = userService.getUserByEmail(loginUser.getEmail());
-            session.setAttribute("user", user);
+            final Person person = personService.getPersonByEmail(loginPerson.getEmail());
+            session.setAttribute("person", person);
             mav.setViewName("redirect:/web/main-page-auth");
         }
 
@@ -124,8 +167,8 @@ public class WebController {
         final List<String> currencyNames = Arrays.stream(CurrencyNames.values())
                 .map(Enum::name).collect(Collectors.toList());
         mav.addObject("values", currencyNames);
-        final User user = (User) session.getAttribute("user");
-        mav.addObject("fullName", user.getFullName());
+        final Person person = (Person) session.getAttribute("person");
+        mav.addObject("fullName", person.getFullName());
         return mav;
     }
 
@@ -141,8 +184,8 @@ public class WebController {
     @GetMapping("/rates")
     public ModelAndView rates(HttpSession session, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("baseFrom") String baseFrom, @RequestParam("baseTo") String baseTo){
         final ModelAndView mav = new ModelAndView("rates");
-        User user = (User) session.getAttribute("user");
-        mav.addObject("fullName",user.getFullName());
+        Person person = (Person) session.getAttribute("person");
+        mav.addObject("fullName", person.getFullName());
         mav.addObject("fromDate",fromDate);
         mav.addObject("toDate",toDate);
         List<RateSaver> rateSavers = currencyService.convertWithHistory(fromDate, "10 July", baseFrom, baseTo);
@@ -158,12 +201,12 @@ public class WebController {
         return new RedirectView("/web/login");
     }
 
-    @ExceptionHandler({UserNotFoundEx.class})
-    public ModelAndView userNotFoundHandle() {
-        log.info("caught: UserNotFoundEx");
+    @ExceptionHandler({PersonNotFoundEx.class})
+    public ModelAndView personNotFoundHandle() {
+        log.info("caught: PersonNotFoundEx");
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("exMessage", "email or password is incorrect");
-        mav.addObject("loginUser", new LoginUser());
+        mav.addObject("loginPerson", new LoginPerson());
         return mav;
     }
 }

@@ -1,16 +1,16 @@
 package com.example.currency_exchange.util;
 
-import com.example.currency_exchange.entity.User;
-import com.example.currency_exchange.model.UserForm;
+import com.example.currency_exchange.entity.Person;
+import com.example.currency_exchange.model.PersonForm;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class ConvertUtil {
-    public static User convert(UserForm userForm){
-       return User
+    public static Person convert(PersonForm personForm){
+       return Person
                 .builder()
-               .fullName(userForm.getFullName())
-               .email(userForm.getEmail())
-               .password(BCrypt.hashpw(userForm.getPassword(),BCrypt.gensalt()))
+               .fullName(personForm.getFullName())
+               .email(personForm.getEmail())
+               .password(BCrypt.hashpw(personForm.getPassword(),BCrypt.gensalt()))
                .build();
 
     }

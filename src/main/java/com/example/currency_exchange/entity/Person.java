@@ -12,8 +12,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class User {
+public class Person {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY )
     private long id;
@@ -21,5 +20,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
     private String password;
+
+    private boolean isEnabled = false;
 
 }

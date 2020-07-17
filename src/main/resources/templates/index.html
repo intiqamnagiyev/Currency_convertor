@@ -24,7 +24,7 @@
                 information by email address and password</p>
             <div th:text="${message}" style="color:red;"></div>
             <div><a href="/web/main-page-guest">Continue without an account</a></div>
-            <form method="post" class="login-section-container-form" th:action="@{/web/login}" th:object="${loginUser}">
+            <form method="post" class="login-section-container-form" th:action="@{/web/login}" th:object="${loginPerson}">
                 <div class="login-section-container-form-input-wrapper">
                     <img th:src="@{/img/mail-icon.svg}" alt="User Icon">
                     <label for="email"></label>
