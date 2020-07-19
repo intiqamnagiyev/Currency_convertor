@@ -15,6 +15,7 @@ import com.example.currency_exchange.util.ConvertUtil;
 import com.example.currency_exchange.validator.LoginPersonValidator;
 import com.example.currency_exchange.validator.RegistrationFormValidator;
 import lombok.extern.log4j.Log4j2;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping({"/web", "/"})
 public class WebController {
-    @Value("${spring.mail.username}")
+    @Value("spring.mail.from.email")
     private String ourEmailAddress;
     private final PersonService personService;
     private final CurrencyService currencyService;
@@ -108,11 +109,11 @@ public class WebController {
             emailService.send(message);
 
             mav.addObject("email", insertedPerson.getEmail());
-            mav.setViewName("successfulRegistration");
+            mav.setViewName("emailVerification");
 
 
-//
-//            ra.addFlashAttribute("message", String.format("%s! successfully registered", userForm.getFullName()));
+
+//            ra.addFlashAttribute("message", String.format("%s! successfully registered", personForm.getFullName()));
 //            mav.setViewName("redirect:/web/login");
         }
         return mav;
@@ -187,13 +188,110 @@ public class WebController {
         Person person = (Person) session.getAttribute("person");
         mav.addObject("fullName", person.getFullName());
         mav.addObject("fromDate",fromDate);
-        mav.addObject("toDate",toDate);
+        mav.addObject("toDate",toDate);                                 // we take by default 10'th of july cause it ain't gonna give us toDate.!
         List<RateSaver> rateSavers = currencyService.convertWithHistory(fromDate, "10 July", baseFrom, baseTo);
         mav.addObject("rates",rateSavers);
         mav.addObject("baseFrom",baseFrom);
         mav.addObject("baseTo",baseTo);
         return mav;
+    
     }
+
+
+
+
+
+
+
+
+    @RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
+    public ModelAndView displayResetPassword(ModelAndView modelAndView, Person person) {
+        modelAndView.addObject("person", person);
+        modelAndView.setViewName("forgotPassword");
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
+    public ModelAndView forgotPersonPassword(ModelAndView modelAndView, Person person) {
+        Person existingPerson = personService.getPersonByEmail(person.getEmail());
+        if (existingPerson != null) {
+
+            RegistrationToken registrationToken = new RegistrationToken(existingPerson);
+
+            registrationTokenRepo.save(registrationToken);
+
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(existingPerson.getEmail());
+            mailMessage.setSubject("Complete Password Reset!");
+            mailMessage.setFrom(ourEmailAddress);
+            mailMessage.setText("To complete the password reset process, please click here: "
+                    + "http://localhost:8080/confirm-reset?token=" + registrationToken.getToken());
+
+            emailService.send(mailMessage);
+
+            modelAndView.addObject("email", existingPerson.getEmail());
+            modelAndView.setViewName("emailVerification");
+
+        } else {
+            modelAndView.addObject("message", "This email address does not exist!");
+            modelAndView.setViewName("error");
+        }
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/confirm-reset", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView validateResetToken(ModelAndView modelAndView, @RequestParam("token") String registrationToken) {
+        RegistrationToken token = registrationTokenRepo.findByToken(registrationToken);
+
+        if (token != null) {
+            Person person = personService.getPersonByEmail(token.getPerson().getEmail());
+            person.setEnabled(true);
+            personService.save(person);
+            modelAndView.addObject("person", person);
+            modelAndView.addObject("email", person.getEmail());
+            modelAndView.setViewName("resetPassword");
+        } else {
+            modelAndView.addObject("message", "The link is invalid or broken!");
+            modelAndView.setViewName("error");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
+    public ModelAndView resetPersonPassword(ModelAndView modelAndView, Person person) {
+        if (person.getEmail() != null) {
+
+            Person personByEmail = personService.getPersonByEmail(person.getEmail());
+            personByEmail.setPassword(BCrypt.hashpw(person.getPassword(),BCrypt.gensalt()));
+//            tokenPerson.setPassword(encoder.encode(person.getPassword()));
+            personService.save(personByEmail);
+            modelAndView.addObject("message", "Password successfully reset. You can now log in with the new credentials.");
+            modelAndView.setViewName("successResetPassword");
+        } else {
+            modelAndView.addObject("message", "The link is invalid or broken!");
+            modelAndView.setViewName("error");
+        }
+        return modelAndView;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @GetMapping("/logout")
     public RedirectView logout(HttpSession session) {
