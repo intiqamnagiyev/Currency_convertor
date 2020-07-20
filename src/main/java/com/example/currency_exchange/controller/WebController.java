@@ -207,7 +207,7 @@ public class WebController {
     @RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
     public ModelAndView displayResetPassword(ModelAndView modelAndView, Person person) {
         modelAndView.addObject("person", person);
-        modelAndView.setViewName("forgotPassword");
+        modelAndView.setViewName("forgot-password");
         return modelAndView;
     }
 
