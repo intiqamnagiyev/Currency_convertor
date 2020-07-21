@@ -1,0 +1,1 @@
+web: java -jar target/currency_exchange-0.0.1-SNAPSHOT.jar
